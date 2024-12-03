@@ -36,18 +36,6 @@ func login(context *gin.Context) {
 		return
 	}
 
-	// if err != nil {
-	// 	context.JSON(http.StatusBadRequest, gin.H{"message": "Could not parse request body"})
-	// 	return
-	// }
-
-	// err = user.ValidateCredentials()
-
-	// if err != nil {
-	// 	context.JSON(http.StatusUnauthorized, gin.H{"message": "Could not validate credentials"})
-	// 	return
-	// }
-
 	token, err := utils.GenerateToken(user.Email, user.ID)
 
 	if err != nil {

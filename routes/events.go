@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"udemy-rest-api/db"
 	"udemy-rest-api/models"
+	"udemy-rest-api/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -43,8 +44,16 @@ func createEvent(context *gin.Context) {
 		return
 	}
 
+	userId, err := utils.VerifyToken(token)
+
+	if err != nil {
+		context.JSON(http.StatusUnauthorized, gin.H{"message": "Not authorized"})
+		return
+	}
+
 	var event models.Event
-	err := context.ShouldBindJSON(&event)
+
+	err = context.ShouldBindJSON(&event)
 
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": "Could not parse request body"})
@@ -52,7 +61,7 @@ func createEvent(context *gin.Context) {
 	}
 
 	event.ID = 1
-	event.UserID = 1
+	event.UserID = userId
 	event.Save()
 
 	if err != nil {
