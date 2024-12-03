@@ -48,17 +48,17 @@ func GetUserByEmail(email string) (*User, error) {
 	return &user, nil
 }
 
-func (u *User) ValidateCredentials() error {
+func (u User) ValidateCredentials() error {
 	query := "SELECT password FROM users WHERE email = ?"
 	row := db.DB.QueryRow(query, u.Email)
 
-	var storedPassword string
-	err := row.Scan(&storedPassword)
+	var retrievedPassword string
+	err := row.Scan(&u.ID, &retrievedPassword)
 	if err != nil {
 		return errors.New("credentials invalid")
 	}
 
-	if !utils.CheckPasswordHash(u.Password, storedPassword) {
+	if !utils.CheckPasswordHash(u.Password, retrievedPassword) {
 		return errors.New("credentials invalid")
 	}
 
