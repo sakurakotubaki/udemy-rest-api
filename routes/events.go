@@ -67,3 +67,30 @@ func GetEventById(id int64) *models.Event {
 	}
 	return &event
 }
+
+func updateEvent(context *gin.Context) {
+	id := context.Param("id")
+	eventId, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"message": "Invalid event ID"})
+		return
+	}
+
+	existingEvent, err := models.GetEventById(eventId)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could not fetch event"})
+		return
+	}
+
+	if err := context.ShouldBindJSON(existingEvent); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"message": "Could not parse request body"})
+		return
+	}
+
+	if err := existingEvent.Update(); err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could not update event"})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"message": "Event updated successfully", "event": existingEvent})
+}
