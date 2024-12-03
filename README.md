@@ -11,3 +11,9 @@ http://localhost:8080/events
 ```shell
 go get github.com/mattn/go-sqlite3
 ```
+
+Password Hash化モジュール:
+https://pkg.go.dev/golang.org/x/crypto/bcrypt
+```shell
+go get -u golang.org/x/crypto/bcrypt
+```
